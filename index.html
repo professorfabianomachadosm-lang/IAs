@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IAs para Estudos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: cabeçalho com busca e filtros por finalidade; grade de fichas agrupadas por categoria */
+:root{
+  --bg:#F3F5F4; --surface:#FFFFFF; --ink:#16221F; --muted:#56635F; --line:#D9E0DD;
+  --accent:#1F5BD6; --accent-ink:#FFFFFF; --chip:#E7ECEA;
+  --c-conv:#1F5BD6; --c-pesq:#0E7C66; --c-vis:#B4471B; --c-apr:#7A3FB8; --c-ling:#A16207;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101615; --surface:#18201E; --ink:#E8EEEC; --muted:#9AA8A3; --line:#2A3532;
+  --accent:#7FA4FF; --accent-ink:#0B1220; --chip:#222C2A;
+  --c-conv:#7FA4FF; --c-pesq:#4CC9A8; --c-vis:#F08A5D; --c-apr:#C29BF2; --c-ling:#E5B84F;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101615; --surface:#18201E; --ink:#E8EEEC; --muted:#9AA8A3; --line:#2A3532;
+  --accent:#7FA4FF; --accent-ink:#0B1220; --chip:#222C2A;
+  --c-conv:#7FA4FF; --c-pesq:#4CC9A8; --c-vis:#F08A5D; --c-apr:#C29BF2; --c-ling:#E5B84F;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1120px;margin:0 auto;padding-block:40px 32px;display:flex;flex-direction:column;gap:36px}
+header{display:flex;flex-direction:column;gap:14px;max-width:760px}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2.1rem,5.5vw,3.6rem);line-height:1.02;margin:0;text-wrap:balance;letter-spacing:-.02em}
+h1 span{color:var(--accent)}
+.lead{color:var(--muted);margin:0;max-width:62ch;font-size:1.05rem}
+.tools{display:flex;flex-direction:column;gap:14px}
+.search{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 14px;max-width:520px}
+.search svg{flex:none;color:var(--muted)}
+.search input{border:0;background:transparent;color:var(--ink);font:inherit;padding:13px 0;width:100%;outline:none}
+.search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.filters button{font:inherit;font-size:.9rem;border:1px solid var(--line);background:transparent;color:var(--ink);padding:7px 14px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.filters button .dot{width:9px;height:9px;border-radius:50%;background:var(--k,var(--muted))}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.filters button:focus-visible,.card a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.group{display:flex;flex-direction:column;gap:14px}
+.group h2{font-family:var(--display);font-weight:700;font-size:1.35rem;margin:0;display:flex;align-items:baseline;gap:10px}
+.group h2 small{font-family:var(--body);font-weight:400;font-size:.88rem;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0;transition:border-color .15s, transform .15s}
+.card:hover{border-color:var(--k);transform:translateY(-2px)}
+.top{display:flex;align-items:center;gap:12px}
+.mono{width:44px;height:44px;border-radius:11px;flex:none;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.05rem;
+  color:var(--k);background:color-mix(in srgb,var(--k) 14%,transparent)}
+.card h3{font-family:var(--display);font-weight:700;font-size:1.12rem;margin:0}
+.card .host{font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
+.card p{margin:0;color:var(--muted);font-size:.95rem;flex:1}
+.card a{align-self:flex-start;text-decoration:none;font-weight:700;font-size:.92rem;color:var(--accent-ink);background:var(--k);padding:8px 14px;border-radius:9px;display:inline-flex;gap:6px;align-items:center}
+.card a:hover{filter:brightness(1.08)}
+.empty{color:var(--muted)}
+.note{background:var(--chip);border-radius:12px;padding:14px 16px;font-size:.92rem;color:var(--muted);max-width:760px}
+.note strong{color:var(--ink)}
+footer{border-top:1px solid var(--line);padding-top:20px;font-size:.88rem;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+footer a{color:var(--accent)}
+@media (prefers-reduced-motion: reduce){.card{transition:none}.card:hover{transform:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Guia de ferramentas · para alunos</div>
+    <h1>IAs para <span>estudar, pesquisar</span> e criar</h1>
+    <p class="lead">Uma seleção de ferramentas de inteligência artificial para tirar dúvidas, encontrar artigos científicos, organizar ideias em mapas e montar apresentações. Clique em “Acessar” para abrir cada uma em uma nova aba.</p>
+  </header>
+
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Buscar por nome ou função (ex.: artigos, mapa mental)" autocomplete="off">
+    </label>
+    <div class="filters" id="filters" role="group" aria-label="Filtrar por finalidade"></div>
+  </div>
+
+  <div id="list" style="display:flex;flex-direction:column;gap:36px"></div>
+
+  <p class="note"><strong>Antes de usar:</strong> confira as informações que a IA entrega, principalmente datas, números e referências. Algumas ferramentas pedem cadastro e várias têm limites no plano gratuito.</p>
+
+  <footer>
+    <span>Organizado pelo Prof. Fabiano Silveira Machado.</span>
+    <span>Lista baseada na curadoria do Prof. Dr. Luiz Fernando Rodrigues Junior — <a href="https://luizfr-jr.github.io/meu-site-ia/" target="_blank" rel="noopener">página original</a>.</span>
+  </footer>
+</div>
+
+<script>
+const CATS = {
+  conv:{nome:"Conversa e escrita", desc:"assistentes para dúvidas, redação e ideias", cor:"--c-conv"},
+  pesq:{nome:"Pesquisa acadêmica", desc:"busca e leitura de artigos científicos", cor:"--c-pesq"},
+  vis:{nome:"Mapas, diagramas e imagens", desc:"para visualizar e organizar ideias", cor:"--c-vis"},
+  apr:{nome:"Apresentações e anotações", desc:"slides, notas e organização de estudo", cor:"--c-apr"},
+  ling:{nome:"Tradução e revisão", desc:"textos em outras línguas e escrita acadêmica", cor:"--c-ling"}
+};
+const IAS = [
+  {n:"ChatGPT", c:"conv", u:"https://chat.openai.com", d:"IA de conversação para dúvidas, redação e ideias."},
+  {n:"Claude", c:"conv", u:"https://claude.ai/", d:"IA conversacional da Anthropic, boa para textos longos, leitura de documentos e escrita."},
+  {n:"Gemini", c:"conv", u:"https://gemini.google.com/", d:"IA generativa do Google que responde perguntas, cria conteúdos e se integra aos serviços Google."},
+  {n:"Copilot", c:"conv", u:"https://copilot.microsoft.com", d:"IA de conversação da Microsoft para dúvidas, redação e ideias."},
+  {n:"DeepSeek", c:"conv", u:"https://chat.deepseek.com/", d:"IA de conversação para dúvidas, redação e ideias."},
+  {n:"Kimi", c:"conv", u:"https://www.kimi.com/", d:"IA de conversação da Moonshot AI que lida bem com textos longos e tem modo de pesquisa na web."},
+  {n:"Qwen", c:"conv", u:"https://chat.qwen.ai/", d:"IA de conversação para dúvidas, redação e ideias."},
+  {n:"Perplexity", c:"conv", u:"https://www.perplexity.ai/", d:"Buscador com respostas geradas por IA que mostra as fontes consultadas."},
+  {n:"GenSpark", c:"conv", u:"https://genspark.ai/", d:"Agente de IA que pesquisa na web e monta páginas, resumos e conteúdos a partir de um pedido."},
+  {n:"Manus", c:"conv", u:"https://manus.ai/", d:"Agente de IA que executa tarefas em várias etapas, como pesquisar, programar e produzir relatórios."},
+  {n:"LeapSpace", c:"pesq", u:"https://www.sciencedirect.com/leapspace", d:"Espaço de pesquisa da Elsevier que une ScienceDirect e Scopus. Faz relatórios, compara artigos e explica por que cada fonte foi citada. Depende de acesso institucional."},
+  {n:"Scopus AI", c:"pesq", u:"https://www.elsevier.com/products/scopus/scopus-ai", d:"Resume temas de pesquisa a partir dos resumos da base Scopus, com referências e sugestões para aprofundar. Depende de acesso institucional."},
+  {n:"Undermind", c:"pesq", u:"https://www.undermind.ai/home/", d:"Faz uma busca demorada e minuciosa na literatura científica, segue as citações e entrega um relatório com os artigos mais relevantes."},
+  {n:"SciSpace", c:"pesq", u:"https://scispace.com/", d:"Busca artigos e ajuda a ler e entender trechos de cada um."},
+  {n:"Consensus", c:"pesq", u:"https://consensus.app/search/", d:"Responde perguntas com base em artigos científicos e mostra o que os estudos concluem."},
+  {n:"Elicit", c:"pesq", u:"https://elicit.com/", d:"Assistente de pesquisa que automatiza revisões sistemáticas e extração de dados."},
+  {n:"Semantic Scholar", c:"pesq", u:"https://www.semanticscholar.org/", d:"Buscador acadêmico com análise de citações e recomendação de artigos."},
+  {n:"PaperFinder", c:"pesq", u:"https://paperfinder.allen.ai/chat", d:"Encontra artigos relevantes a partir de perguntas e temas de pesquisa."},
+  {n:"ScholarQA", c:"pesq", u:"https://scholarqa.allen.ai/chat", d:"Respostas baseadas em artigos do Semantic Scholar. Bom para dúvidas acadêmicas."},
+  {n:"ResearchRabbit", c:"pesq", u:"https://researchrabbitapp.com/home", d:"Explore artigos, autores e conexões científicas em mapas visuais."},
+  {n:"Litmaps", c:"pesq", u:"https://www.litmaps.com/", d:"Descubra artigos conectados por mapas visuais da literatura."},
+  {n:"STORM", c:"pesq", u:"https://storm.genie.stanford.edu/", d:"Ferramenta da Universidade de Stanford que pesquisa um tema e gera um texto organizado, com referências."},
+  {n:"Bohrium", c:"pesq", u:"https://www.bohrium.com/home", d:"Plataforma que usa IA para apoiar a pesquisa e as descobertas científicas."},
+  {n:"Napkin", c:"vis", u:"https://app.napkin.ai/page/create", d:"Transforma texto em diagramas automaticamente."},
+  {n:"Heurística", c:"vis", u:"https://www.heuristi.ca/", d:"Aprendizagem visual com mapas conceituais e mentais."},
+  {n:"GitMind", c:"vis", u:"https://gitmind.com/app/recents", d:"Mapas mentais, fluxogramas e organogramas com colaboração em tempo real."},
+  {n:"Leonardo", c:"vis", u:"https://leonardo.ai/", d:"Gera imagens criativas a partir de descrições em texto."},
+  {n:"NotebookLM", c:"apr", u:"https://notebooklm.google.com/", d:"Assistente de pesquisa e anotações que trabalha a partir dos seus próprios materiais."},
+  {n:"Avidnote", c:"apr", u:"https://avidnote.com/", d:"Editor de anotações acadêmicas com organização apoiada por IA."},
+  {n:"Gamma", c:"apr", u:"https://gamma.app/", d:"Cria apresentações modernas com apoio de IA em poucos minutos."},
+  {n:"Presentations.AI", c:"apr", u:"https://presentations.ai/", d:"Criação automática de apresentações com design profissional."},
+  {n:"Writefull", c:"ling", u:"https://writefull.com/", d:"Revisa a linguagem de textos acadêmicos em inglês, faz paráfrases e sugere títulos e resumos. Funciona com Word e Overleaf."},
+  {n:"DeepL", c:"ling", u:"https://www.deepl.com/pt-BR/translator", d:"Tradução e apoio à escrita em diversas línguas."}
+];
+
+const filtersEl = document.getElementById('filters');
+const listEl = document.getElementById('list');
+const q = document.getElementById('q');
+let ativo = 'todas';
+
+const host = u => { try { return new URL(u).hostname.replace(/^www\./,''); } catch(e){ return u; } };
+const sigla = n => n.replace(/[^A-Za-zÀ-ú ]/g,' ').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase() || n[0];
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+
+function botoes(){
+  const opts = [['todas','Todas',null], ...Object.entries(CATS).map(([k,v])=>[k,v.nome,v.cor])];
+  filtersEl.innerHTML = '';
+  opts.forEach(([k,nome,cor])=>{
+    const b = document.createElement('button');
+    b.type='button'; b.id='f-'+k;
+    b.setAttribute('aria-pressed', String(k===ativo));
+    if (cor) b.style.setProperty('--k', `var(${cor})`);
+    const n = k==='todas' ? IAS.length : IAS.filter(i=>i.c===k).length;
+    b.innerHTML = (cor?'<span class="dot"></span>':'') + `${nome} <span style="opacity:.6">${n}</span>`;
+    b.onclick = ()=>{ ativo=k; botoes(); render(); };
+    filtersEl.appendChild(b);
+  });
+}
+
+function render(){
+  const t = norm(q.value.trim());
+  listEl.innerHTML = '';
+  let total = 0;
+  Object.entries(CATS).forEach(([k,cat])=>{
+    if (ativo!=='todas' && ativo!==k) return;
+    const itens = IAS.filter(i=>i.c===k && (!t || norm(i.n+' '+i.d).includes(t)));
+    if (!itens.length) return;
+    total += itens.length;
+    const s = document.createElement('section'); s.className='group';
+    s.innerHTML = `<h2>${cat.nome} <small>${cat.desc}</small></h2><div class="grid"></div>`;
+    const g = s.querySelector('.grid');
+    itens.forEach(i=>{
+      const el = document.createElement('article'); el.className='card';
+      el.style.setProperty('--k', `var(${cat.cor})`);
+      el.innerHTML = `<div class="top"><div class="mono" aria-hidden="true">${sigla(i.n)}</div>
+        <div style="min-width:0"><h3>${i.n}</h3><div class="host">${host(i.u)}</div></div></div>
+        <p>${i.d}</p>
+        <a href="${i.u}" target="_blank" rel="noopener">Acessar <span aria-hidden="true">↗</span></a>`;
+      g.appendChild(el);
+    });
+    listEl.appendChild(s);
+  });
+  if (!total) listEl.innerHTML = '<p class="empty">Nenhuma ferramenta encontrada. Tente outra palavra.</p>';
+}
+q.addEventListener('input', render);
+botoes(); render();
+</script>
+</body>
+</html>
